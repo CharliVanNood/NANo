@@ -30,7 +30,7 @@ class Launcher:
                 print(f"[ \033[92m  OK \033[0m ] loaded in {app_}")
             except:
                 print(f"[ \033[91mERROR\033[0m ] failed to load in {app_}")
-        self.applications.append(["exit", None])
+        self.applications.append(["Exit", None])
 
     def drawGameMenu(self):
         os.system('cls' if os.name == 'nt' else 'clear')
@@ -46,6 +46,7 @@ class Launcher:
         print("Select Application ________________________")
 
         for idx, option in enumerate(self.applications):
+            time.sleep(0.05)
             if idx == self.selected_idx:
                 print(f"> {option[0]}")
             else:
@@ -56,12 +57,10 @@ class Launcher:
             self.selected_idx = (self.selected_idx - 1) % len(self.applications)
             self.drawGameMenu()
             keyboard.read_event()
-
         elif keyboard.is_pressed('down'):
             self.selected_idx = (self.selected_idx + 1) % len(self.applications)
             self.drawGameMenu()
             keyboard.read_event()
-
         elif keyboard.is_pressed('enter'):
             if self.selected_idx == len(self.applications) - 1:
                 print("Exiting...")

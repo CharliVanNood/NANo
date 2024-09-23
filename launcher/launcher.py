@@ -67,5 +67,6 @@ class Launcher:
                 print("Exiting...")
                 exit()
             print(f"You selected '{self.applications[self.selected_idx][0]}'")
+            self.applications[self.selected_idx][1].run()
             self.drawGameMenu()
     

@@ -7,6 +7,9 @@ class Launcher:
     def __init__(self):
         print("          starting launcher")
 
+        self.username = ""
+        self.username = input("username: ")
+
         self.applications = []
         self.loadApplications()
 
@@ -25,7 +28,7 @@ class Launcher:
         for app_ in arr:
             try:
                 app = importlib.import_module(f'applications.{app_}.main')
-                application = app.App()
+                application = app.App(self.username)
                 self.applications.append([app_, application])
                 print(f"[ \033[92m  OK \033[0m ] loaded in {app_}")
             except:

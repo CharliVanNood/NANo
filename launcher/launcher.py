@@ -49,7 +49,6 @@ class Launcher:
         print("Select Application ________________________")
 
         for idx, option in enumerate(self.applications):
-            time.sleep(0.05)
             if idx == self.selected_idx:
                 print(f"> {option[0]}")
             else:

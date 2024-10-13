@@ -16,7 +16,7 @@ class Launcher:
         self.selected_idx = 0
 
         print("[ \033[92m  OK \033[0m ] started launcher")
-        time.sleep(0.5)
+        time.sleep(2)
 
         self.drawGameMenu()
         while True:

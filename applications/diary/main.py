@@ -1,6 +1,7 @@
 import time
 import random
 import datetime
+import math
 
 from applications.diary.commands import commands
 
@@ -11,7 +12,7 @@ sentenceWeights = {}
 
 class App:
     def __init__(self, username):
-        self.name = "Diary"
+        self.name = "diary"
         self.username = username
 
         print(f"          loading {self.name}")
@@ -20,15 +21,55 @@ class App:
         print(f"starting {self.name}")
         self.weightWords()
         time.sleep(1)
-        running = True
-        while running:
-            input_ = input("when did this action happen? (submit 2 words or more for verification, n to cancel): ")
+        action = ""
+        while action == "":
+            action_ = input("read (r), add (a), edit (e), exit (n): ")
+            if action_ == "r" or action_ == "a" or action_ == "e" or action_ == "n":
+                action = action_
+
+        if action == "a":
+            running = True
+            while running:
+                input_ = input("when did this action happen? (n to cancel): ")
+                if input_ == "n":
+                    running = False
+                else:
+                    time_ = self.query(input_)
+                    
+                    text_ = input("what happened?: ")
+                    timeSec = 0
+
+                    if time_ == "_noteToday_":
+                        timeSec = time.time()
+                    elif time_ == "_noteYesterday_":
+                        timeSec = time.time() - 60 * 60 * 24
+                    elif time_ == "_noteTomorrow_":
+                        timeSec = time.time() + 60 * 60 * 24
+                    elif time_ == "_noteInNumber_":
+                        number_ = 0
+                        for word in input_.split(" "):
+                            if word.isnumeric():
+                                number_ = float(word)
+                                print(f"in {number_} days {text_}")
+                        timeSec = time.time() + 60 * 60 * 24 * number_
+                    elif time_ == "_noteInNumberAgo_":
+                        number_ = 0
+                        for word in input_.split(" "):
+                            if word.isnumeric():
+                                number_ = float(word)
+                                print(f"{number_} days ago {text_}")
+                        timeSec = time.time() - 60 * 60 * 24 * number_
+
+                    with open(f"applications/{self.name}/diary.csv", "a") as f:
+                        f.write(f"\n{timeSec}, {text_}")
+        elif action == "e":
+            print("not implemented")
+        elif action == "r":
+            input_ = input("what day? (n to cancel): ")
             if input_ == "n":
                 running = False
-            elif len(input_.split(" ")) >= 2:
+            else:
                 time_ = self.query(input_)
-                
-                text_ = input("what happened?: ")
                 timeSec = 0
 
                 if time_ == "_noteToday_":
@@ -42,15 +83,43 @@ class App:
                     for word in input_.split(" "):
                         if word.isnumeric():
                             number_ = float(word)
-                            print(f"in {number_} days {text_}")
                     timeSec = time.time() + 60 * 60 * 24 * number_
                 elif time_ == "_noteInNumberAgo_":
                     number_ = 0
                     for word in input_.split(" "):
                         if word.isnumeric():
                             number_ = float(word)
-                            print(f"{number_} days ago {text_}")
                     timeSec = time.time() - 60 * 60 * 24 * number_
+
+            closest = [10000000, 0, 0]
+            data = []
+
+            with open(f"applications/{self.name}/diary.csv", "r") as f:
+                data_ = f.readlines()
+                lines = []
+                lineIndex = 0
+                for line in data_:
+                    if line == "": continue
+                    if lineIndex > 0:
+                        lineData = line.split(",")
+                        data.append([float(lineData[0]), lineData[1]])
+                    lineIndex += 1
+
+            i = 0
+            for line in data:
+                if abs(line[0] - timeSec) < closest[0]:
+                    closest[0] = abs(line[0] - timeSec)
+                    closest[1] = i
+                    closest[2] = abs(line[0] - time.time())
+                i += 1
+            
+            amountOfDays = math.floor(closest[2] / (60 * 60 * 24))
+            print(f"found a log {amountOfDays} days ago")
+            print(data[closest[1]][1])
+            print("")
+            input("press enter to return")
+        
+        time.sleep(1)
 
 
     def query(self, input_):
@@ -58,7 +127,6 @@ class App:
         return commands[weights.index(max(weights))][1][random.randint(0, len(commands[weights.index(max(weights))][1]) - 1)]
 
     def weightWords(self):
-        print("weighting words")
         for question in commands:
             sentenceWeights[question[0]] = 1
             for word_ in question[0].split(" "):

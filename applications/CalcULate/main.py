@@ -14,6 +14,7 @@ class App:
         print("")
         text = input("(n to close): ")
         if text == "n":
+            time.sleep(1)
             return
         else:
             if len(text.split(" ")) < 2:
@@ -37,7 +38,6 @@ class App:
         text_ = text_.replace("times", "*")
         text_ = text_.replace("divided by", "/")
         keys = text_.split(" ")
-        print(keys)
 
         for key in keys:
             if key.replace(".", "").replace(",", "").isnumeric():
@@ -65,7 +65,6 @@ class App:
                     step += 1
                     print(explanation)
                 equasion[key_ - 1] = float(equasion[key_ - 1]) * float(equasion[key_ + 1])
-                print(equasion)
                 equasion.pop(key_)
                 equasion.pop(key_)
                 key_ -= 2
@@ -78,7 +77,6 @@ class App:
                     step += 1
                     print(explanation)
                 equasion[key_ - 1] = round(float(equasion[key_ - 1]) / float(equasion[key_ + 1]), 2)
-                print(equasion)
                 equasion.pop(key_)
                 equasion.pop(key_)
                 key_ -= 2
@@ -99,7 +97,6 @@ class App:
                     step += 1
                     print(explanation)
                 equasion[key_ - 1] = float(equasion[key_ - 1]) + float(equasion[key_ + 1])
-                print(equasion)
                 equasion.pop(key_)
                 equasion.pop(key_)
                 key_ -= 2
@@ -115,12 +112,10 @@ class App:
                     step += 1
                     print(explanation)
                 equasion[key_ - 1] = round(float(equasion[key_ - 1]) - float(equasion[key_ + 1]), 2)
-                print(equasion)
                 equasion.pop(key_)
                 equasion.pop(key_)
                 key_ -= 2
             key_ += 1
-        print(equasion)
 
         if explain:
             explanation += "And at last you'll end up with " + str(equasion[0])

@@ -13,10 +13,15 @@ class App:
         time.sleep(1)
         self.numberChosen = random.randint(1, 9)
         self.guessed = False
+        self.guesses = 0
+        self.maxGuesses = 5
         print("choose a number between 1 and 9")
-        while not self.guessed:
+        while not self.guessed and self.guesses < self.maxGuesses:
             self.TRY()
-        print("you guessed it!!")
+        if self.guesses < self.maxGuesses:
+            print(f"you guessed it in { self.guesses} tries!!")
+        else:
+            print(f"you're out of tries :C'")
         action = input("play again? (y/n): ")
         if "y" in action.lower():
             self.run()
@@ -25,6 +30,7 @@ class App:
 
     def TRY(self):
         number = self.chooseOption(10)
+        self.guesses += 1
         if number == self.numberChosen:
             self.guessed = True
         elif number > self.numberChosen:

@@ -49,6 +49,19 @@ class App:
 
         time.sleep(1)
 
+        print("")
+        print("88")
+        print("88")
+        print("88")
+        print("88,dPPYba,  ,adPPYYba, 8b,dPPYba,   ,adPPYb,d8 88,dPYba,,adPYba,  ,adPPYYba,")
+        print("88P'    \"8a \"\"     `Y8 88P'   `\"8a a8\"    `Y88 88P'   \"88\"    \"8a \"\"     `Y8")
+        print("88       88 ,adPPPPP88 88       88 8b       88 88      88      88 ,adPPPPP88")
+        print("88       88 88,    ,88 88       88 \"8a,   ,d88 88      88      88 88,    ,88")
+        print("88       88 `\"8bbdP\"Y8 88       88  `\"YbbdP\"Y8 88      88      88 `\"8bbdP\"Y8")
+        print("                                    aa,    ,88")
+        print("                                    \"Y8bbdP\"")
+        print("")
+
         self.difficulty = ""
         print("select difficulty ( easy / medium / hard ): ")
         while self.difficulty == "":
@@ -63,7 +76,9 @@ class App:
         if self.difficulty == "hard": self.chosenWord = random.choice(self.hard)
         
         self.guessedCharacters = []
+        self.guessedCharactersTotal = []
         self.guessed = False
+        self.guesses = 0
 
         while not self.guessed:
             self.TRY()
@@ -91,12 +106,21 @@ class App:
             self.guessed = True
             return
 
+        self.printHangman(self.guesses)
         print(self.guessedWord)
 
         character = input("character: ")
-        for char in self.chosenWord:
-            if character.lower() == char.lower():
-                self.guessedCharacters.append(character.lower())
+        if character.lower() not in self.guessedCharactersTotal:
+            self.guessedCharactersTotal.append(character.lower())
+            inWord = False
+            for char in self.chosenWord:
+                if character.lower() == char.lower():
+                    self.guessedCharacters.append(character.lower())
+                    inWord = True
+            if not inWord:
+                self.guesses += 1
+        else:
+            print("this character has already been guessed.")
 
     def save(self):
         try:
@@ -136,3 +160,68 @@ class App:
             with open(f"applications/{self.name}/users.txt", "w") as f:
                 f.write(f"{self.username}: 0")
             return 0
+    
+    def printHangman(self, tries):
+        if tries == 0:
+            print("  _______")
+            print(" |/      |")
+            print(" |")
+            print(" |")
+            print(" |")
+            print(" |")
+            print(" |")
+            print("_|___")
+        elif tries == 1:
+            print("  _______")
+            print(" |/      |")
+            print(" |      (_)")
+            print(" |")
+            print(" |")
+            print(" |")
+            print(" |")
+            print("_|___")
+        elif tries == 2:
+            print("  _______")
+            print(" |/      |")
+            print(" |      (_)")
+            print(" |       |")
+            print(" |       |")
+            print(" |")
+            print(" |")
+            print("_|___")
+        elif tries == 3:
+            print("  _______")
+            print(" |/      |")
+            print(" |      (_)")
+            print(" |      \|")
+            print(" |       |")
+            print(" |")
+            print(" |")
+            print("_|___")
+        elif tries == 4:
+            print("  _______")
+            print(" |/      |")
+            print(" |      (_)")
+            print(" |      \|/")
+            print(" |       |")
+            print(" |")
+            print(" |")
+            print("_|___")
+        elif tries == 5:
+            print("  _______")
+            print(" |/      |")
+            print(" |      (_)")
+            print(" |      \|/")
+            print(" |       |")
+            print(" |      /")
+            print(" |")
+            print("_|___")
+        else:
+            print("  _______")
+            print(" |/      |")
+            print(" |      (_)")
+            print(" |      \|/")
+            print(" |       |")
+            print(" |      / \\")
+            print(" |")
+            print("_|___")

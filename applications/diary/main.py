@@ -63,7 +63,71 @@ class App:
                     with open(f"applications/{self.name}/diary.csv", "a") as f:
                         f.write(f"\n{timeSec}, {text_}")
         elif action == "e":
-            print("not implemented")
+            input_ = input("what day? (n to cancel): ")
+            if input_ == "n":
+                running = False
+            else:
+                time_ = self.query(input_)
+                timeSec = 0
+
+                if time_ == "_noteToday_":
+                    timeSec = time.time()
+                elif time_ == "_noteYesterday_":
+                    timeSec = time.time() - 60 * 60 * 24
+                elif time_ == "_noteTomorrow_":
+                    timeSec = time.time() + 60 * 60 * 24
+                elif time_ == "_noteInNumber_":
+                    number_ = 0
+                    for word in input_.split(" "):
+                        if word.isnumeric():
+                            number_ = float(word)
+                    timeSec = time.time() + 60 * 60 * 24 * number_
+                elif time_ == "_noteInNumberAgo_":
+                    number_ = 0
+                    for word in input_.split(" "):
+                        if word.isnumeric():
+                            number_ = float(word)
+                    timeSec = time.time() - 60 * 60 * 24 * number_
+
+            closest = [10000000, 0, 0]
+            data = []
+
+            with open(f"applications/{self.name}/diary.csv", "r") as f:
+                data_ = f.readlines()
+                lines = []
+                lineIndex = 0
+                for line in data_:
+                    if line == "": continue
+                    if lineIndex > 0:
+                        lineData = line.split(",")
+                        data.append([float(lineData[0]), lineData[1]])
+                    lineIndex += 1
+
+            i = 0
+            for line in data:
+                if abs(line[0] - timeSec) < closest[0]:
+                    closest[0] = abs(line[0] - timeSec)
+                    closest[1] = i
+                    closest[2] = abs(line[0] - time.time())
+                i += 1
+            
+            amountOfDays = math.floor(closest[2] / (60 * 60 * 24))
+            print(f"found a log {amountOfDays} days ago")
+            print(data[closest[1]][1])
+            print("")
+            edit = input("edit (y / n): ")
+            if edit == "y":
+                text_ = input("new text: ")
+                data[closest[1]][1] = " " + text_
+
+            fileOut = "time,data\n"
+            for line in data:
+                data_ = line[1].replace('\n', '')[1:]
+                fileOut += f"{line[0]}, {data_}\n"
+            
+            with open(f"applications/{self.name}/diary.csv", "w") as f:
+                f.write(fileOut)
+
         elif action == "r":
             input_ = input("what day? (n to cancel): ")
             if input_ == "n":
